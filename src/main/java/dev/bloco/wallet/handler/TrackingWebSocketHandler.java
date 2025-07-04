@@ -21,7 +21,7 @@ public class TrackingWebSocketHandler implements WebSocketHandler {
         return session.receive()
                 .map(msg -> msg.getPayloadAsText())
                 .map(json -> new TrackingRequest("address", json, java.util.List.of()))
-                .flatMapMany(trackingService::track)
+                .flatMap(trackingService::track)
                 .map(tx -> session.textMessage(tx.hash()))
                 .as(session::send);
     }
