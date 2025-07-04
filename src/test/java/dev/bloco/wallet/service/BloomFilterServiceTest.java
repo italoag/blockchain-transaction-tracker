@@ -1,7 +1,7 @@
 package dev.bloco.wallet.service;
 
 import org.junit.jupiter.api.Test;
-import reactor.test.StepVerifier;
+import org.junit.jupiter.api.Assertions;
 
 class BloomFilterServiceTest {
 
