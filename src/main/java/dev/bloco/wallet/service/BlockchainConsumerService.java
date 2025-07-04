@@ -5,12 +5,24 @@ import dev.bloco.wallet.model.Transaction;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.List;
+
 @Service
 public class BlockchainConsumerService {
 
-    // TODO: implement websocket connections to blockchain nodes
+    // Simple stub that emits dummy blocks every second
     public Flux<Block> streamBlocks(String network) {
-        return Flux.empty();
+        return Flux.interval(Duration.ofSeconds(1))
+                .map(i -> {
+                    Instant now = Instant.now();
+                    Transaction tx = new Transaction(
+                            "tx-" + network + "-" + i,
+                            "0xfrom", "0xto", network,
+                            now, true);
+                    return new Block(i, now, List.of(tx));
+                });
     }
 
     public Flux<Transaction> streamTransactions(String network) {
