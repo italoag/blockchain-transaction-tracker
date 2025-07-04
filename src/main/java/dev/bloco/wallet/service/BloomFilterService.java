@@ -15,7 +15,7 @@ public class BloomFilterService {
 
     private int indexFor(String key, int seed) {
         int hash = BloomFilterUtil.hash(key, seed);
-        hash = Math.abs(hash);
+        hash = hash & 0x7FFFFFFF;
         return hash % DEFAULT_SIZE;
     }
 
