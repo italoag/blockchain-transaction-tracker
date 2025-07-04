@@ -11,4 +11,10 @@ class BloomFilterServiceTest {
         service.add("polygon", "0x1");
         assert service.mightContain("polygon", "0x1");
     }
+
+    @Test
+    void missReturnsFalse() {
+        BloomFilterService service = new BloomFilterService();
+        assert !service.mightContain("polygon", "0x2");
+    }
 }
