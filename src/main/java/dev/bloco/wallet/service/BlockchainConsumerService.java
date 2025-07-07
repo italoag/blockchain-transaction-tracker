@@ -53,7 +53,15 @@ public class BlockchainConsumerService {
             if (endpoints == null || endpoints.isEmpty()) {
                 throw new IllegalArgumentException("No endpoints configured for network: " + n);
             }
-            return buildClient(endpoints.get(0));
+            for (String endpoint : endpoints) {
+                try {
+                    return buildClient(endpoint);
+                } catch (RuntimeException e) {
+                    // Log the failure and try the next endpoint
+                    System.err.println("Failed to connect to endpoint: " + endpoint + ". Trying next...");
+                }
+            }
+            throw new RuntimeException("Failed to connect to any endpoint for network: " + n);
         });
     }
 
