@@ -51,6 +51,12 @@
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Web3j for blockchain connectivity -->
+        <dependency>
+            <groupId>org.web3j</groupId>
+            <artifactId>core</artifactId>
+            <version>4.12.0</version>
+        </dependency>
     </dependencies>
 
     <build>
