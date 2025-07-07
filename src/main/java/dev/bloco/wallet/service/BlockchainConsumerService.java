@@ -88,7 +88,7 @@ public class BlockchainConsumerService {
                     return Flux.from(flowable)
                             .map(ethBlock -> toBlock(network, ethBlock.getBlock()));
                 })
-                .retryWhen(Retry.backoff(Long.MAX_VALUE, NetworkUtils.reconnectBackoff(1)));
+                .retryWhen(Retry.backoff(10, NetworkUtils.reconnectBackoff(1)).maxBackoff(Duration.ofMinutes(5)));
     }
 
     public Flux<Transaction> streamTransactions(String network) {
