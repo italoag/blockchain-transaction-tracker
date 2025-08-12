@@ -149,7 +149,7 @@ public class BlockchainMonitorService {
             lastBlocks.put(httpUrl, latest);
             EthFilter filter = new EthFilter(new DefaultBlockParameterNumber(start),
                     new DefaultBlockParameterNumber(latest), List.copyOf(addresses));
-            topics.forEach(filter::addOptionalTopics);
+            filter.addOptionalTopics(List.copyOf(topics));
             return Mono.fromFuture(client.ethGetLogs(filter).sendAsync()).map(EthLog::getLogs);
         });
     }
