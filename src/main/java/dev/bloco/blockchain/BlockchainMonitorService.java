@@ -89,7 +89,7 @@ public class BlockchainMonitorService {
     }
 
     public boolean isMonitoredTopic(String topic) {
-        return topicBloom.mightContain(topic);
+        return topics.contains(topic);
     }
 
     private void rebuildAddressBloom() {
