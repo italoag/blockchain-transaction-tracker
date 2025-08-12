@@ -75,7 +75,7 @@ public class BlockchainMonitorService {
     }
 
     public boolean isMonitoredAddress(String address) {
-        return addressBloom.mightContain(address);
+        return addresses.contains(address);
     }
 
     public void addEventTopic(String topic) {
