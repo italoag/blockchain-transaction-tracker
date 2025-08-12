@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: wallet
+
+networks:
+  endpoints:
+    ethereum: ${ETHEREUM_WS_URL:}
+    polygon: ${POLYGON_WS_URL:}
+
+resilience4j:
+  retry:
+    instances:
+      web3:
+        max-attempts: 3
+        wait-duration: 1s
+  circuitbreaker:
+    instances:
+      web3:
+        sliding-window-type: count_based
+        sliding-window-size: 5
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 5s
