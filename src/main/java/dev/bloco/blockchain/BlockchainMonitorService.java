@@ -58,7 +58,7 @@ public class BlockchainMonitorService {
             try {
                 service.connect();
             } catch (Exception e) {
-                throw new RuntimeException("Failed to connect to websocket", e);
+                throw new RuntimeException("Failed to connect to websocket at " + u, e);
             }
             return Web3j.build(service);
         });
