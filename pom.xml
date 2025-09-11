@@ -5,14 +5,14 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.4</version>
+        <version>3.5.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>dev.bloco</groupId>
-    <artifactId>wallet</artifactId>
+    <artifactId>blockchain-tx-tracker</artifactId>
     <version>0.1.0-SNAPSHOT</version>
-    <name>wallet</name>
-    <description>wallet</description>
+    <name>blockchain-tx-tracker</name>
+    <description>Blockchain Transaction Tracker</description>
     <url/>
     <licenses>
         <license/>
@@ -88,7 +88,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>33.1.0-jre</version>
+            <version>33.4.8-jre</version>
         </dependency>
     </dependencies>
 
