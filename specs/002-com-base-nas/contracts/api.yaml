@@ -1,0 +1,283 @@
+openapi: 3.0.3
+info:
+  title: Blockchain Transaction Tracker API
+  description: REST API for real-time blockchain transaction monitoring
+  version: 1.0.0
+  contact:
+    name: Blockchain Monitoring Service
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+  - url: https://api.blockchain-tracker.com
+    description: Production server
+
+paths:
+  /tracking/transactions:
+    post:
+      summary: Start transaction monitoring
+      description: Initiate monitoring for specified wallet addresses and networks
+      operationId: startTransactionTracking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrackingRequest'
+            example:
+              type: "wallet"
+              value: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+              networks: ["ethereum", "polygon"]
+      responses:
+        '200':
+          description: Monitoring started successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionStream'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /tracking/status:
+    get:
+      summary: Get monitoring status
+      description: Retrieve current monitoring status and statistics
+      operationId: getMonitoringStatus
+      responses:
+        '200':
+          description: Monitoring status retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitoringStatus'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /tracking/networks:
+    get:
+      summary: List supported networks
+      description: Get list of supported blockchain networks
+      operationId: getSupportedNetworks
+      responses:
+        '200':
+          description: Networks retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportedNetworks'
+
+  /ws/tracking:
+    get:
+      summary: WebSocket transaction stream
+      description: Real-time WebSocket endpoint for transaction streaming
+      operationId: websocketTransactionStream
+      parameters:
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [wallet, contract]
+        - name: value
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: networks
+          in: query
+          required: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '101':
+          description: WebSocket connection established
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+
+components:
+  schemas:
+    TrackingRequest:
+      type: object
+      required:
+        - type
+        - value
+        - networks
+      properties:
+        type:
+          type: string
+          enum: [wallet, contract]
+          description: Type of entity to monitor
+        value:
+          type: string
+          description: Address or identifier to monitor
+        networks:
+          type: array
+          items:
+            type: string
+          description: List of network IDs to monitor
+          minItems: 1
+
+    Transaction:
+      type: object
+      required:
+        - hash
+        - from
+        - to
+        - network
+        - timestamp
+        - confirmed
+      properties:
+        hash:
+          type: string
+          description: Transaction hash
+          example: "0x1234567890abcdef..."
+        from:
+          type: string
+          description: Sender address
+          example: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+        to:
+          type: string
+          description: Receiver address
+          example: "0xA0b86a33E6441e88C5F2712C3E9b74F5c4d6F45C"
+        value:
+          type: string
+          description: Transaction value in wei
+          example: "1000000000000000000"
+        network:
+          type: string
+          description: Blockchain network
+          example: "ethereum"
+        timestamp:
+          type: string
+          format: date-time
+          description: Transaction timestamp
+        confirmed:
+          type: boolean
+          description: Whether transaction is confirmed
+        blockNumber:
+          type: string
+          description: Block number
+          example: "18500000"
+        gasUsed:
+          type: string
+          description: Gas used
+          example: "21000"
+        status:
+          type: integer
+          description: Transaction status (1 = success, 0 = failure)
+          example: 1
+
+    TransactionStream:
+      type: object
+      properties:
+        streamId:
+          type: string
+          description: Unique stream identifier
+        status:
+          type: string
+          enum: [active, paused, stopped]
+        message:
+          type: string
+          description: Status message
+
+    MonitoringStatus:
+      type: object
+      properties:
+        activeStreams:
+          type: integer
+          description: Number of active monitoring streams
+        totalTransactions:
+          type: integer
+          description: Total transactions processed
+        networks:
+          type: array
+          items:
+            $ref: '#/components/schemas/NetworkStatus'
+        uptime:
+          type: string
+          description: Service uptime
+        lastBlock:
+          type: object
+          additionalProperties:
+            type: string
+          description: Last processed block per network
+
+    NetworkStatus:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Network identifier
+        name:
+          type: string
+          description: Network name
+        status:
+          type: string
+          enum: [connected, disconnected, error]
+        lastBlock:
+          type: string
+          description: Last processed block number
+        activeConnections:
+          type: integer
+          description: Number of active connections
+
+    SupportedNetworks:
+      type: object
+      properties:
+        networks:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+              supportsWebSocket:
+                type: boolean
+              supportsHttp:
+                type: boolean
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: Error code
+        message:
+          type: string
+          description: Error message
+        details:
+          type: object
+          description: Additional error details
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for authentication (optional)
+
+security:
+  - ApiKeyAuth: []

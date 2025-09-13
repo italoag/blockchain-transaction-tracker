@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "name": "Code Quality Analyzer",
+  "description": "Monitors Java source code files for changes and provides automated code quality analysis including code smells, SOLID principles, design patterns, domain-driven design suggestions, and performance optimizations",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "src/main/java/**/*.java",
+      "src/test/java/**/*.java"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Analyze the modified Java code for potential improvements focusing on:\n\n1. **Code Smells & Clean Code**: Identify any code smells, long methods, large classes, duplicate code, or violations of clean code principles\n2. **SOLID Principles**: Check adherence to Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion principles\n3. **Design Patterns**: Suggest appropriate design patterns that could improve the code structure (Strategy, Factory, Observer, etc.)\n4. **Domain-Driven Design**: Evaluate the rich domain model implementation, aggregate boundaries, value objects, and domain services\n5. **Spring Boot Best Practices**: Review reactive programming patterns, dependency injection, configuration management, and WebFlux usage\n6. **Performance Optimizations**: Identify potential performance bottlenecks, memory usage issues, or inefficient reactive stream operations\n7. **Maintainability**: Assess code readability, naming conventions, method complexity, and overall maintainability\n\nProvide specific, actionable suggestions while preserving existing functionality. Focus on improvements that align with the blockchain transaction tracking domain and reactive architecture."
+  }
+}
